@@ -61,3 +61,6 @@ class Episode:
                 data.append({key: value for key, value in zip(self.LIST_FIELDS, row)})
 
         return data
+
+    async def filter(self, attribute):
+        ...
