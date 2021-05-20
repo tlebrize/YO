@@ -14,8 +14,11 @@ The *YO*ga videos API
 
 [X] list the different attributes
 [X] search episodes by attributes
-[ ] full text search
+[X] full text search
+	[ ] trigram ?
+[ ] browsable API
 [ ] change Episode.series_index to a fk to the related episode when present
+	[ ] dual link ?
 [ ] add creation date to episodes
 [ ] sorting options on episode lists/search
 [ ] user accounts

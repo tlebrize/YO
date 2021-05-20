@@ -1,18 +1,18 @@
 GET = """
 SELECT
-    episode.id,
-    episode.title,
-    level.name,
-    teacher.name,
-    category.name,
-    group_concat(bodypart.name, ",")
-FROM episode
-LEFT JOIN level ON level.id = episode.level_id
-LEFT JOIN teacher ON teacher.id = episode.teacher_id
-LEFT JOIN category ON category.id = episode.category_id
-LEFT JOIN bodypart_episode ON bodypart_episode.episode_id = episode.id
-LEFT JOIN bodypart ON bodypart.id = bodypart_episode.bodypart_id
-WHERE episode.id = :id
+    id,
+    url,
+    thumbnail,
+    description,
+    title,
+    level,
+    teacher,
+    category,
+    body_parts,
+    duration,
+    series
+FROM full_episode
+WHERE id = :id
 """
 
 LIST = "SELECT %(fields)s FROM episode LIMIT %(limit)s OFFSET %(offset)s"
@@ -24,7 +24,7 @@ LEFT JOIN %(attribute)s ON %(attribute)s.id = episode.%(attribute)s_id
 WHERE %(attribute)s.id = %(uid)s
 """
 
-import logging
+SEARCH = "SELECT * FROM episode_fts WHERE episode_fts MATCH :query ORDER BY rank"
 
 
 class Episode:
@@ -38,11 +38,16 @@ class Episode:
 
     GET_FIELDS = [
         "id",
+        "url",
+        "thumbnail",
+        "description",
         "title",
         "level",
         "teacher",
         "category",
         "bodyparts",
+        "duration",
+        "series",
     ]
 
     def __init__(self, db):
@@ -86,10 +91,19 @@ class Episode:
             "uid": uid,
         }
 
-        logging.error(FILTER % options)
-
         async with self.db.execute(FILTER % options) as cursor:
             async for row in cursor:
                 data.append({key: value for key, value in zip(self.LIST_FIELDS, row)})
+
+        return data
+
+    async def search(self, query: str):
+        data = []
+
+        options = {"query": f"{query}*"}
+
+        async with self.db.execute(SEARCH, options) as cursor:
+            async for row in cursor:
+                data.append({key: value for key, value in zip(self.GET_FIELDS, row)})
 
         return data

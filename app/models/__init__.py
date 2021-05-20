@@ -1,2 +1,2 @@
-from .episodes import Episode
+from .episode import Episode
 from .attribute import Attribute

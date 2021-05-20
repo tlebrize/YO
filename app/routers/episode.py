@@ -21,12 +21,6 @@ async def list(
     return {"count": len(data), "episodes": data}
 
 
-@router.get("/{uid}/")
-async def get(uid: int, db: Connection = Depends(get_db)):
-    data = await Episode(db).get(uid)
-    return data
-
-
 FILTER_CHOICES_REGEX = "|".join(Attribute.ATTRIBUTES_LIST)
 
 
@@ -38,3 +32,18 @@ async def filter(
 ):
     data = await Episode(db).filter(attribute, uid)
     return data
+
+
+@router.get("/search/")
+async def search(
+    query: str,
+    db: Connection = Depends(get_db),
+):
+
+    data = await Episode(db).search(query)
+    return {"count": len(data), "episodes": data}
+
+
+@router.get("/{uid}/")
+async def get(uid: int, db: Connection = Depends(get_db)):
+    return await Episode(db).get(uid)

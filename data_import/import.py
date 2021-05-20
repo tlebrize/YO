@@ -1,5 +1,5 @@
 import json, re, sqlite3
-from sql import create_tables, inserts
+from sql import create_tables, inserts, views, fts
 
 URL_TO_ID = re.compile(r"https:\/\/player\.vimeo\.com\/video\/(?P<id>[0-9]*)")
 
@@ -98,6 +98,12 @@ def insert_episodes(cur, episodes):
         )
 
 
+def enable_fts(cur):
+    cur.execute(views.CREATE_FULL_EPISODE)
+    cur.execute(fts.SETUP_EPISODE_FTS)
+    cur.execute(fts.REBUILD_FTS)
+
+
 def main():
     con = sqlite3.connect("db.sqlite3")
     cur = con.cursor()
@@ -105,6 +111,8 @@ def main():
     init_db(cur)
     episodes = extract_categories({})
     insert_episodes(cur, episodes)
+
+    enable_fts(cur)
 
     con.commit()
     con.close()
