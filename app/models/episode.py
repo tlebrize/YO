@@ -8,7 +8,7 @@ SELECT
     level,
     teacher,
     category,
-    body_parts,
+    bodyparts,
     duration,
     series
 FROM full_episode
@@ -17,14 +17,12 @@ WHERE id = :id
 
 LIST = "SELECT %(fields)s FROM episode LIMIT %(limit)s OFFSET %(offset)s"
 
-FILTER = """
+SEARCH = """
 SELECT %(fields)s
-FROM episode
-LEFT JOIN %(attribute)s ON %(attribute)s.id = episode.%(attribute)s_id
-WHERE %(attribute)s.id = %(uid)s
+FROM episode_fts
+WHERE episode_fts MATCH :query
+ORDER BY rank
 """
-
-SEARCH = "SELECT * FROM episode_fts WHERE episode_fts MATCH :query ORDER BY rank"
 
 
 class Episode:
@@ -71,28 +69,12 @@ class Episode:
             self.LIST_FIELDS,
         )
 
-    async def filter(self, attribute, uid):
-        fields = ",".join(
-            map(
-                lambda f: f"episode.{f}",
-                self.LIST_FIELDS,
-            ),
-        )
-
-        options = {
-            "fields": fields,
-            "attribute": attribute,
-            "uid": uid,
-        }
-
-        return await self.db.get_many(
-            FILTER % options,
-            self.LIST_FIELDS,
-        )
-
     async def search(self, query: str):
-        options = {"query": f"{query}*"}
+        options = {"fields": ",".join(self.GET_FIELDS)}
+        args = {"query": f"{query}*"}
+
         return await self.db.get_many(
             SEARCH % options,
             self.GET_FIELDS,
+            args,
         )

@@ -10,12 +10,15 @@ async def wrapper(connection):
                 data.append({key: value for key, value in zip(fields, row)})
         return data
 
+    connection.get_many = get_many
+
     async def get_one(query, fields, args=None):
         async with connection.execute(query, args) as cursor:
             row = await cursor.fetchone()
+        if not row:
+            raise Exception("not_found")
         return {key: value for key, value in zip(fields, row)}
 
-    connection.get_many = get_many
     connection.get_one = get_one
 
     return connection

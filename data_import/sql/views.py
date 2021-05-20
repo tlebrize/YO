@@ -11,7 +11,7 @@ SELECT
     category.name category,
     series.name series,
     duration.name duration,
-    group_concat(bodypart.name, ",") body_parts
+    group_concat(bodypart.name, ",") bodyparts
 FROM episode
 LEFT JOIN level ON level.id = episode.level_id
 LEFT JOIN teacher ON teacher.id = episode.teacher_id

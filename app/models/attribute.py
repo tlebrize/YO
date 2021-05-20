@@ -7,8 +7,6 @@ GROUP BY %(attribute)s.id
 
 GET = """
 SELECT 
-    %(attribute)s.id,
-    %(attribute)s.name,
     episode.id,
     episode.description,
     episode.title,
@@ -32,6 +30,16 @@ class Attribute:
         "teacher",
     ]
 
+    FILTER_CHOICES_REGEX = "|".join(ATTRIBUTES_LIST)
+
+    GET_FIELDS = [
+        "episode_id",
+        "description",
+        "title",
+        "thumbnail",
+        "url",
+    ]
+
     async def list(self):
         data = {attr: [] for attr in self.ATTRIBUTES_LIST}
         fields = ["id", "name", "count"]
@@ -51,8 +59,9 @@ class Attribute:
 
         options = {"attribute": attribute}
         args = {"id": uid}
-        data = await self.db.get_many(
+        return await self.db.get_many(
             GET % options,
-            fields,
+            self.GET_FIELDS,
             args,
         )
+

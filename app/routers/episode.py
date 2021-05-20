@@ -1,3 +1,5 @@
+from typing import List
+from pydantic import BaseModel
 from fastapi import APIRouter, Depends, Query
 from typing import Optional
 from ..models import Episode, Attribute
@@ -12,24 +14,12 @@ router = APIRouter(
 @router.get("/")
 async def list(
     db: Connection = Depends(get_db),
-    limit: Optional[int] = None,
-    offset: Optional[int] = None,
+    limit: Optional[int] = 50,
+    offset: Optional[int] = 0,
 ):
 
     data = await Episode(db).list(limit, offset)
     return {"count": len(data), "episodes": data}
-
-
-FILTER_CHOICES_REGEX = "|".join(Attribute.ATTRIBUTES_LIST)
-
-
-@router.get("/filter/{attribute}/{uid}/")
-async def filter(
-    uid: int,
-    attribute: str = Query(..., regex=FILTER_CHOICES_REGEX),
-    db: Connection = Depends(get_db),
-):
-    return await Episode(db).filter(attribute, uid)
 
 
 @router.get("/search/")
