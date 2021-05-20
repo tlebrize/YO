@@ -2,7 +2,7 @@ from typing import AsyncGenerator, Optional
 from fastapi import FastAPI, Depends
 from aiosqlite import Connection, connect
 
-from .models import Episode
+from .models import Episode, Attributes
 
 app = FastAPI()
 
@@ -27,4 +27,10 @@ async def list(
 @app.get("/episode/{uid}/")
 async def get(uid: int, db: Connection = Depends(get_db)):
     data = await Episode(db).get(uid)
+    return data
+
+
+@app.get("/attributes/")
+async def get(db: Connection = Depends(get_db)):
+    data = await Attributes(db).list()
     return data

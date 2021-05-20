@@ -12,11 +12,12 @@ The *YO*ga videos API
 
 ## TODO
 
-[ ] list the different tags
-[ ] search episodes by tags
+[X] list the different attributes
+[ ] search episodes by attributes
 [ ] full text search
 [ ] change Episode.series_index to a fk to the related episode when present
 [ ] add creation date to episodes
 [ ] sorting options on episode lists/search
 [ ] user accounts
 [ ] add a Seen M2M between users and videos
+[ ] add a frontend, maybe
