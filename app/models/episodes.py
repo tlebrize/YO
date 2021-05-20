@@ -17,6 +17,15 @@ WHERE episode.id = :id
 
 LIST = "SELECT %(fields)s FROM episode LIMIT %(limit)s OFFSET %(offset)s"
 
+FILTER = """
+SELECT %(fields)s
+FROM episode
+LEFT JOIN %(attribute)s ON %(attribute)s.id = episode.%(attribute)s_id
+WHERE %(attribute)s.id = %(uid)s
+"""
+
+import logging
+
 
 class Episode:
     LIST_FIELDS = [
@@ -62,5 +71,25 @@ class Episode:
 
         return data
 
-    async def filter(self, attribute):
-        ...
+    async def filter(self, attribute, uid):
+        fields = ",".join(
+            map(
+                lambda f: f"episode.{f}",
+                self.LIST_FIELDS,
+            ),
+        )
+
+        data = []
+        options = {
+            "fields": fields,
+            "attribute": attribute,
+            "uid": uid,
+        }
+
+        logging.error(FILTER % options)
+
+        async with self.db.execute(FILTER % options) as cursor:
+            async for row in cursor:
+                data.append({key: value for key, value in zip(self.LIST_FIELDS, row)})
+
+        return data

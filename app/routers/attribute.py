@@ -1,6 +1,6 @@
 from aiosqlite import Connection
 from fastapi import APIRouter, Depends
-from ..models import Attributes
+from ..models import Attribute
 from ..dependencies import get_db
 
 router = APIRouter(
@@ -11,5 +11,5 @@ router = APIRouter(
 
 @router.get("/")
 async def get(db: Connection = Depends(get_db)):
-    data = await Attributes(db).list()
+    data = await Attribute(db).list()
     return data

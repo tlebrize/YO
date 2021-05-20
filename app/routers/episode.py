@@ -1,7 +1,7 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from typing import Optional
 from aiosqlite import Connection
-from ..models import Episode
+from ..models import Episode, Attribute
 from ..dependencies import get_db
 
 router = APIRouter(
@@ -24,4 +24,17 @@ async def list(
 @router.get("/{uid}/")
 async def get(uid: int, db: Connection = Depends(get_db)):
     data = await Episode(db).get(uid)
+    return data
+
+
+FILTER_CHOICES_REGEX = "|".join(Attribute.ATTRIBUTES_LIST)
+
+
+@router.get("/filter/{attribute}/{uid}/")
+async def filter(
+    uid: int,
+    attribute: str = Query(..., regex=FILTER_CHOICES_REGEX),
+    db: Connection = Depends(get_db),
+):
+    data = await Episode(db).filter(attribute, uid)
     return data

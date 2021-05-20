@@ -8,7 +8,7 @@ GROUP BY %(attribute)s.id
 """
 
 
-class Attributes:
+class Attribute:
     def __init__(self, db):
         self.db = db
 

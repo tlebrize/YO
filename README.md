@@ -13,7 +13,7 @@ The *YO*ga videos API
 ## TODO
 
 [X] list the different attributes
-[ ] search episodes by attributes
+[X] search episodes by attributes
 [ ] full text search
 [ ] change Episode.series_index to a fk to the related episode when present
 [ ] add creation date to episodes
