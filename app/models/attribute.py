@@ -3,8 +3,20 @@ SELECT %(attribute)s.id, name, count(*)
 FROM %(attribute)s
 LEFT JOIN episode ON episode.%(attribute)s_id = %(attribute)s.id
 GROUP BY %(attribute)s.id
-;
+"""
 
+GET = """
+SELECT 
+    %(attribute)s.id,
+    %(attribute)s.name,
+    episode.id,
+    episode.description,
+    episode.title,
+    episode.thumbnail,
+    episode.url
+FROM %(attribute)s
+LEFT JOIN episode ON episode.%(attribute)s_id = %(attribute)s.id
+WHERE %(attribute)s.id = :id
 """
 
 
@@ -25,10 +37,22 @@ class Attribute:
         fields = ["id", "name", "count"]
 
         for attribute in self.ATTRIBUTES_LIST:
-            async with self.db.execute(LIST % {"attribute": attribute}) as cursor:
-                async for row in cursor:
-                    data[attribute].append(
-                        {key: value for key, value in zip(fields, row)}
-                    )
+            options = {"attribute": attribute}
+            data[attribute] = await self.db.get_many(
+                LIST % options,
+                fields,
+            )
 
         return data
+
+    async def get(self, attribute, uid):
+        if not attribute in self.ATTRIBUTES_LIST:
+            raise Exception("invalid_input", {"attribute": attribute})
+
+        options = {"attribute": attribute}
+        args = {"id": uid}
+        data = await self.db.get_many(
+            GET % options,
+            fields,
+            args,
+        )

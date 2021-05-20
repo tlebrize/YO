@@ -1,7 +1,6 @@
-from aiosqlite import Connection
 from fastapi import APIRouter, Depends
 from ..models import Attribute
-from ..dependencies import get_db
+from ..dependencies import get_db, Connection
 
 router = APIRouter(
     prefix="/attribute",

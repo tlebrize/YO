@@ -54,15 +54,11 @@ class Episode:
         self.db = db
 
     async def get(self, uid):
-        async with self.db.execute(GET, {"id": uid}) as cursor:
-            row = await cursor.fetchone()
-
-        return {key: value for key, value in zip(self.GET_FIELDS, row)}
+        return await self.db.get_one(GET, self.GET_FIELDS, {"id": uid})
 
     async def list(self, limit=None, offset=None):
         limit = min(max(0, limit), 50) if limit else 50
         offset = offset or 0
-        data = []
 
         options = {
             "fields": ",".join(self.LIST_FIELDS),
@@ -70,11 +66,10 @@ class Episode:
             "offset": offset,
         }
 
-        async with self.db.execute(LIST % options) as cursor:
-            async for row in cursor:
-                data.append({key: value for key, value in zip(self.LIST_FIELDS, row)})
-
-        return data
+        return await self.db.get_many(
+            LIST % options,
+            self.LIST_FIELDS,
+        )
 
     async def filter(self, attribute, uid):
         fields = ",".join(
@@ -84,26 +79,20 @@ class Episode:
             ),
         )
 
-        data = []
         options = {
             "fields": fields,
             "attribute": attribute,
             "uid": uid,
         }
 
-        async with self.db.execute(FILTER % options) as cursor:
-            async for row in cursor:
-                data.append({key: value for key, value in zip(self.LIST_FIELDS, row)})
-
-        return data
+        return await self.db.get_many(
+            FILTER % options,
+            self.LIST_FIELDS,
+        )
 
     async def search(self, query: str):
-        data = []
-
         options = {"query": f"{query}*"}
-
-        async with self.db.execute(SEARCH, options) as cursor:
-            async for row in cursor:
-                data.append({key: value for key, value in zip(self.GET_FIELDS, row)})
-
-        return data
+        return await self.db.get_many(
+            SEARCH % options,
+            self.GET_FIELDS,
+        )
