@@ -130,4 +130,5 @@ dmypy.json
 
 #private input data
 data_import/data/
+data/
 data.tar
