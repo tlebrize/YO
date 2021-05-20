@@ -99,7 +99,7 @@ def insert_episodes(cur, episodes):
 
 
 def main():
-    con = sqlite3.connect("../db.sqlite3")
+    con = sqlite3.connect("db.sqlite3")
     cur = con.cursor()
 
     init_db(cur)
