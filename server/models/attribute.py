@@ -17,6 +17,19 @@ LEFT JOIN episode ON episode.%(attribute)s_id = %(attribute)s.id
 WHERE %(attribute)s.id = :id
 """
 
+SERIES_LIST = """
+SELECT 
+series.name series,
+episode.title,
+duration.name duration,
+episode.id,
+episode.thumbnail
+FROM series
+LEFT JOIN episode ON series.id = episode.series_id
+LEFT JOIN duration ON episode.duration_id = duration.id
+GROUP BY episode.id
+"""
+
 
 class Attribute:
     def __init__(self, db):
@@ -39,6 +52,14 @@ class Attribute:
         "title",
         "thumbnail",
         "url",
+    ]
+
+    SERIES_LIST_FIELDS = [
+        "series",
+        "title",
+        "duration",
+        "id",
+        "thumbnail",
     ]
 
     async def list(self):
@@ -65,3 +86,6 @@ class Attribute:
             self.GET_FIELDS,
             args,
         )
+
+    async def series_list(self):
+        return await self.db.get_many(SERIES_LIST, self.SERIES_LIST_FIELDS)

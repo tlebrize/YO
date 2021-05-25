@@ -12,3 +12,6 @@ uvicorn==0.13.4
 uvloop==0.15.2
 watchgod==0.7
 websockets==8.1
+python-multipart==0.0.5
+six==1.16.0
+py-bcrypt==0.4
