@@ -10,7 +10,7 @@ def tojson(p):
 
 
 def extract_categories(episodes):
-    categories_data = tojson("data/categories.json")
+    categories_data = tojson("data_import/data/categories.json")
 
     for C in categories_data:
         for S in C["series"]:
