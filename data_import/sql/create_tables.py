@@ -46,6 +46,13 @@ CREATE TABLE IF NOT EXISTS bodypart
     name        TEXT NOT NULL
 )
 """
+CREATE_TAG = """
+CREATE TABLE IF NOT EXISTS tag
+(
+    id          INTEGER PRIMARY KEY,
+    name        TEXT NOT NULL
+)
+"""
 
 CREATE_EPISODES = """
 CREATE TABLE IF NOT EXISTS episode
@@ -57,7 +64,7 @@ CREATE TABLE IF NOT EXISTS episode
     level_id        INTEGER REFERENCES level (id),
     series_id       INTEGER REFERENCES series (id),
     series_index    INTEGER,
-    tag             TEXT,
+    tag_id          INTEGER,
     teacher_id      INTEGER REFERENCES teacher (id),
     thumbnail       TEXT,
     title           TEXT,
@@ -81,6 +88,7 @@ statements = [
     CREATE_SERIES,
     CREATE_DURATIONS,
     CREATE_BODYPART,
+    CREATE_TAG,
     CREATE_EPISODES,
     CREATE_BODYPART_EPISODE_M2M,
 ]

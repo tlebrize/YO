@@ -28,6 +28,7 @@ class Attribute:
         "level",
         "series",
         "teacher",
+        "tag",
     ]
 
     FILTER_CHOICES_REGEX = "|".join(ATTRIBUTES_LIST)
@@ -64,4 +65,3 @@ class Attribute:
             self.GET_FIELDS,
             args,
         )
-

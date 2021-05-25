@@ -18,7 +18,7 @@ The *YO*ga videos API
 	- [ ] trigram ?
 - [X] db fetch tools
 - [ ] ~~browsable API~~
-- [ ] episode.tag -> FK
+- [X] episode.tag -> FK
 - [ ] change Episode.series_index to a fk to the related episode when present
 	- [ ] dual link ?
 - [ ] add creation date to episodes
