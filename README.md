@@ -7,7 +7,7 @@ The *YO*ga videos API
 - install deps using `pip install -r requirements.txt`
 - have the data/ folder at the root of this directory
 - create and fill the datbase with `python data_import/import.py`
-- start the server with `uvicorn app.main:app`
+- start the server with `uvicorn server.main:app`
 	- Optionally add the `--reload` parameter to the uvicorn call
 
 ## TODO
