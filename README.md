@@ -24,6 +24,6 @@ The *YO*ga videos API
 - [ ] add creation date to episodes
 - [ ] sorting options on episode lists/search
 - [ ] add error handling
-- [ ] user accounts
+- [X] user accounts
 - [ ] add a Seen M2M between users and videos
 - [ ] add a frontend, maybe
