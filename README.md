@@ -7,8 +7,9 @@ The *YO*ga videos API
 - install deps using `pip install -r requirements.txt`
 - have the data/ folder at the root of this directory
 - create and fill the datbase with `python data_import/import.py`
+- start redis `docker-compose up -d`
 - start the server with `uvicorn server.main:app`
-	- Optionally add the `--reload` parameter to the uvicorn call
+	- Optionally add the `--reload` parameter to the uvicorn call for backend hotreload.
 
 ## TODO
 
@@ -24,6 +25,6 @@ The *YO*ga videos API
 - [ ] add creation date to episodes
 - [ ] sorting options on episode lists/search
 - [ ] add error handling
-- [ ] user accounts
+- [X] user accounts
 - [ ] add a Seen M2M between users and videos
 - [ ] add a frontend, maybe

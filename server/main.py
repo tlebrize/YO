@@ -1,22 +1,17 @@
-from fastapi import FastAPI, Depends
-from fastapi.security import OAuth2PasswordRequestForm
-from .routers import episode, attribute
-from .settings import HOST
+from fastapi import FastAPI
+from .routers import episode, attribute, auth
+from .settings import Settings
 
 app = FastAPI()
 
 app.include_router(episode)
 app.include_router(attribute)
+app.include_router(auth)
 
 
 @app.get("/")
 def root():
     return {
-        "search": f"{HOST}/episode/search/?query=yoga",
-        "by attributes": f"{HOST}/attribute/",
+        "search": f"{Settings.HOST}/episode/search/?query=yoga",
+        "by attributes": f"{Settings.HOST}/attribute/",
     }
-
-
-@app.post("/token")
-async def login(form_data: OAuth2PasswordRequestForm = Depends()):
-    ...
