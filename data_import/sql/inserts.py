@@ -14,7 +14,7 @@ INSERT INTO episode (
     level_id,
     series_id,
     series_index,
-    tag,
+    tag_id,
     teacher_id,
     thumbnail,
     title,

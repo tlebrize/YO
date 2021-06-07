@@ -1,19 +1,4 @@
-GET = """
-SELECT
-    id,
-    url,
-    thumbnail,
-    description,
-    title,
-    level,
-    teacher,
-    category,
-    bodyparts,
-    duration,
-    series
-FROM full_episode
-WHERE id = :id
-"""
+GET = "SELECT %(fields)s FROM full_episode WHERE id = :id"
 
 LIST = "SELECT %(fields)s FROM episode LIMIT %(limit)s OFFSET %(offset)s"
 
@@ -46,13 +31,19 @@ class Episode:
         "bodyparts",
         "duration",
         "series",
+        "tag",
     ]
 
     def __init__(self, db):
         self.db = db
 
     async def get(self, uid):
-        return await self.db.get_one(GET, self.GET_FIELDS, {"id": uid})
+        options = {"fields": ",".join(self.GET_FIELDS)}
+        return await self.db.get_one(
+            GET % options,
+            self.GET_FIELDS,
+            {"id": uid},
+        )
 
     async def list(self, limit=None, offset=None):
         limit = min(max(0, limit), 50) if limit else 50

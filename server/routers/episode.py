@@ -1,8 +1,6 @@
-from typing import List
-from pydantic import BaseModel
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends
 from typing import Optional
-from ..models import Episode, Attribute
+from ..models import Episode
 from ..dependencies import get_db, Connection
 
 router = APIRouter(

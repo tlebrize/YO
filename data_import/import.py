@@ -42,6 +42,7 @@ def insert_episodes(cur, episodes):
         "level": {},
         "category": {},
         "series": {},
+        "tag": {},
     }
 
     many_to_many = {
