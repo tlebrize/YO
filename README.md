@@ -26,4 +26,32 @@ The *YO*ga videos API
 - [ ] add error handling
 - [ ] user accounts
 - [ ] add a Seen M2M between users and videos
-- [ ] add a frontend, maybe
+
+
+## TODO FRONTEND
+- page d'accueil ?
+	-> filtres
+- page de vidéo
+- page gestion profil
+
+
+0) Navbar
+	- Logo (links to home)
+	- Signin/hello xxx
+
+1) Page de vidéo
+	- Titre
+	- Player (thumbnail)
+	- Bouton ajouter aux favoris
+	- Description
+	- Attributes
+
+2) Page d'accueil
+	- Carrousels séries (most seen first)
+	- Barre filtres collapsable
+	- Search bar
+
+3) Gestion profil
+	- username, email, password
+	- favs
+	- stats ?
