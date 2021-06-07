@@ -36,6 +36,6 @@ register_tortoise(
 )
 
 
-@app.get("/episodes/", response_model=List[EpisodeSchema])
-async def read_notes():
-    return await Episode.all()
+@app.get("/episode/", response_model=List[EpisodeSchema])
+async def episode_list():
+    return await EpisodeSchema.from_queryset(Episode.all())
