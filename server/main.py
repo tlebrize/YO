@@ -1,11 +1,12 @@
-from typing import List
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from tortoise import Tortoise
 from tortoise.contrib.fastapi import register_tortoise
 
 from .settings import Settings
-from .models import Episode, EpisodeSchema
 
+Tortoise.init_models(["server.models"], "models")
+from .routers import episode
 
 app = FastAPI()
 app.add_middleware(
@@ -15,6 +16,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.include_router(episode)
+
 db_url = "postgres://yo:securepasswd@0.0.0.0:5432/yo"
 
 TORTOISE_ORM = {
@@ -34,8 +38,3 @@ register_tortoise(
     generate_schemas=True,
     add_exception_handlers=True,
 )
-
-
-@app.get("/episode/", response_model=List[EpisodeSchema])
-async def episode_list():
-    return await EpisodeSchema.from_queryset(Episode.all())

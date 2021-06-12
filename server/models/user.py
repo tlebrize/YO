@@ -2,7 +2,6 @@ from typing import Optional, TypeVar
 from bcrypt import hashpw, gensalt, checkpw
 from tortoise.models import Model
 from tortoise import fields
-from tortoise.contrib.pydantic import pydantic_model_creator
 
 
 U = TypeVar("U", bound="User")
@@ -42,6 +41,3 @@ class User(Model):
     async def create(cls, **kwargs) -> U:
         kwargs["password"] = cls.get_hashed_password(kwargs["password"])
         return await super().create(**kwargs)
-
-
-UserSchema = pydantic_model_creator(User, name="User")
