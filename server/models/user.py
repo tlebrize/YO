@@ -29,7 +29,7 @@ class User(Model):
         cls,
         username: str,
         password: str,
-    ) -> Optional[U]:
+    ) -> Optional[User]:
         user = await User(db).get(username, with_password=True)
         if not user:
             return None
