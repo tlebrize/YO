@@ -1,10 +1,11 @@
 from .episode import Episode
 from .user import User
-from .attributes import Attributes
+from .attributes import Attributes, Tag
 
 __all__ = [
     Episode,
     User,
+    Tag,
     Attributes,
 ]
 
