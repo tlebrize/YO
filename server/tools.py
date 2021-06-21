@@ -1,4 +1,6 @@
+from tortoise.contrib.pydantic import pydantic_model_creator
 from tortoise import Tortoise
+from pydantic import root_validator
 from .main import db_url
 
 
