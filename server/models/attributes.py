@@ -25,8 +25,3 @@ for attribute_name in Attributes.types:
         {},
     )
     setattr(Attributes, attribute_name, model)
-
-
-class Tag(Model):
-    name = fields.CharField(max_length=255)
-    id = fields.IntField(pk=True)
