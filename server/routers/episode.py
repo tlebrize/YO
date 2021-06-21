@@ -1,7 +1,9 @@
+from __future__ import annotations
+
+from typing import List, Optional
 from fastapi import APIRouter, Depends
-from typing import Optional
-from ..models import Episode
-from ..dependencies import get_db, Connection
+from ..models import Episode, Attributes
+from ..schemas import EpisodeSchema, EpisodeSeriesSchema
 
 router = APIRouter(
     prefix="/episode",
@@ -11,27 +13,30 @@ router = APIRouter(
 
 @router.get("/")
 async def list(
-    db: Connection = Depends(get_db),
     limit: Optional[int] = 50,
     offset: Optional[int] = 0,
+    response_model=List[EpisodeSchema],
 ):
-
-    data = await Episode(db).list(limit, offset)
-    return {"count": len(data), "episodes": data}
+    return await EpisodeSchema.from_queryset(Episode.all())
 
 
-@router.get("/search/")
-async def search(
-    query: str,
-    db: Connection = Depends(get_db),
+@router.get("/series/")
+async def get(
+    limit: Optional[int] = 3,
+    offset: Optional[int] = 0,
+    response_model=List[List[EpisodeSeriesSchema]],
 ):
-    data = await Episode(db).search(query)
-    return {"count": len(data), "episodes": data}
+    page = []
+    series = await Attributes.Series.all().order_by("-id").limit(limit).offset(offset)
+
+    for s in series:
+        page.append(await EpisodeSeriesSchema.from_queryset(s.episodes.all()))
+    return page
 
 
 @router.get("/{uid}/")
 async def get(
     uid: int,
-    db: Connection = Depends(get_db),
+    response_model=EpisodeSchema,
 ):
-    return await Episode(db).get(uid)
+    return await EpisodeSchema.from_queryset_single(Episode.get(id=uid))

@@ -1,0 +1,24 @@
+nav {
+    height: 96px;
+    padding: 20px 240px 10px 240px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.274);
+    box-shadow: 0 5px 15px 0 rgba(31, 75, 102, 0.26);
+    z-index: 5;
+}
+
+.logo {
+    font-size: 56px;
+    color: #995848;
+    font-style: bold;
+    font-family: 'Cabin', sans-serif;
+}
+
+.greeting {
+    color: #995848;
+    font-size: 16px;
+    font-weight: 500;
+}

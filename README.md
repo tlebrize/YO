@@ -6,27 +6,11 @@ The *YO*ga videos API
 
 - install deps using `pip install -r requirements.txt`
 - have the data/ folder at the root of this directory
-- create and fill the datbase with `python data_import/import.py`
-- start redis `docker-compose up -d`
+- start redisand postgres with `docker-compose up -d`
 - start the server with `uvicorn server.main:app`
 	- Optionally add the `--reload` parameter to the uvicorn call for backend hotreload.
-
-## TODO
-
-- [X] list the different attributes
-- [X] search episodes by attributes
-- [X] full text search
-	- [ ] trigram ?
-- [X] db fetch tools
-- [ ] ~~browsable API~~
-- [X] episode.tag -> FK
-- [ ] change Episode.series_index to a fk to the related episode when present
-	- [ ] dual link ?
-- [ ] add creation date to episodes
-- [ ] sorting options on episode lists/search
-- [ ] add error handling
-- [X] user accounts
-- [ ] add a Seen M2M between users and videos
+- migrate the database schemas with `aerich upgrade`
+- fill the datbase with `curl http://localhost:8000/load_data/`
 
 
 ## TODO FRONTEND
@@ -41,10 +25,7 @@ The *YO*ga videos API
 	- Signin/hello xxx
 
 1) Page de vidéo
-	- Titre
-	- Player (thumbnail)
 	- Bouton ajouter aux favoris
-	- Description
 	- Attributes
 
 2) Page d'accueil

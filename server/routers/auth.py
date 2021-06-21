@@ -1,16 +1,11 @@
 from uuid import uuid4
-from fastapi import APIRouter, Depends, Response, Cookie
 from pydantic import BaseModel
-from bcrypt import checkpw
-from ..models import User
+from typing import List, Optional
+from fastapi import APIRouter, Depends, Response, Cookie
 from ..settings import Settings
-from ..dependencies import (
-    login_required,
-    Connection,
-    Cache,
-    get_cache,
-    get_db,
-)
+from ..models import User
+from ..schemas import UserSchema
+from ..dependencies import get_cache, login_required, Cache
 
 router = APIRouter(
     prefix="/auth",
@@ -18,32 +13,19 @@ router = APIRouter(
 )
 
 
-def check_password(plain_text_password, hashed_password):
-    return checkpw(plain_text_password, hashed_password)
-
-
-async def authenticate_user(db, username: str, password: str):
-    user = await User(db).get(username, with_password=True)
-    if not user:
-        return False
-    if not check_password(password, user["password"]):
-        return False
-    return user
-
-
-class LoginForm(BaseModel):
+class UserLoginForm(BaseModel):
     username: str
     password: str
 
 
 @router.post("/login/")
-async def login_view(
-    form: LoginForm,
+async def login(
+    form: UserLoginForm,
     response: Response,
-    db: Connection = Depends(get_db),
     cache: Cache = Depends(get_cache),
+    response_model=UserSchema,
 ):
-    user = await authenticate_user(db, form.username, form.password)
+    user = await User.authenticate(form.username, form.password)
     if not user:
         return False
     session_id = uuid4().hex
@@ -55,8 +37,8 @@ async def login_view(
         httponly=True,
         samesite="strict",
     )
-    await cache.add(session_id, user["username"])
-    return {"user": user["id"]}
+    await cache.add(session_id, user.username)
+    return UserSchema.from_orm(user)
 
 
 @router.get("/me/")
@@ -65,7 +47,7 @@ async def me(user=Depends(login_required)):
 
 
 @router.get("/logout/")
-async def logout_view(
+async def logout(
     response: Response,
     session_id: str = Cookie(None),
     _=Depends(login_required),
