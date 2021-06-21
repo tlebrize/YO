@@ -1,13 +1,11 @@
-from typing import TypeVar
+from __future__ import annotations
+
 from tortoise.models import Model
 from tortoise.manager import Manager
 from tortoise import fields
 from tortoise.queryset import QuerySet
 from tortoise.expressions import F
 from .attributes import Attributes
-
-
-E = TypeVar("E", bound="Episode")
 
 
 class EpisodesAttributes:
@@ -31,7 +29,7 @@ class Episode(Model, EpisodesAttributes):
     description = fields.TextField()
 
     @classmethod
-    async def list(cls, limit=None, offset=None) -> QuerySet[E]:
+    async def list(cls, limit=None, offset=None) -> QuerySet[Episode]:
         limit = min(max(0, limit), 50) if limit else 50
         offset = offset or 0
         return cls.all().limit(limit).offset(offset)

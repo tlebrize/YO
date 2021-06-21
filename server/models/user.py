@@ -1,10 +1,9 @@
-from typing import Optional, TypeVar
+from __future__ import annotations
+
+from typing import Optional
 from bcrypt import hashpw, gensalt, checkpw
 from tortoise.models import Model
 from tortoise import fields
-
-
-U = TypeVar("U", bound="User")
 
 
 class User(Model):
@@ -25,19 +24,19 @@ class User(Model):
         return checkpw(plain_text_password, hashed_password)
 
     @classmethod
-    async def authenticate_user(
+    async def authenticate(
         cls,
         username: str,
         password: str,
     ) -> Optional[User]:
-        user = await User(db).get(username, with_password=True)
+        user = await User.get(username=username)
         if not user:
             return None
-        if not check_password(password, user["password"]):
+        if not cls.check_password(password, user.password):
             return None
         return user
 
     @classmethod
-    async def create(cls, **kwargs) -> U:
+    async def create(cls, **kwargs) -> User:
         kwargs["password"] = cls.get_hashed_password(kwargs["password"])
         return await super().create(**kwargs)
