@@ -1,19 +1,42 @@
-GET = "SELECT %(fields)s FROM user WHERE username = :username"
+from __future__ import annotations
+
+from typing import Optional
+from bcrypt import hashpw, gensalt, checkpw
+from tortoise.models import Model
+from tortoise import fields
 
 
-class User:
-    def __init__(self, db):
-        self.db = db
+class User(Model):
+    id = fields.IntField(pk=True)
+    username = fields.CharField(max_length=511)
+    password = fields.CharField(max_length=511)
 
-    GET_FIELDS = ["id", "username", "password"]
+    @classmethod
+    def get_hashed_password(cls, plain_text_password: str) -> str:
+        return hashpw(plain_text_password, gensalt())
 
-    async def get(self, username, with_password=False):
-        options = {"fields": ",".join(self.GET_FIELDS)}
-        data = await self.db.get_one(
-            GET % options,
-            self.GET_FIELDS,
-            {"username": username},
-        )
-        if not with_password:
-            del data["password"]
-        return data
+    @classmethod
+    def check_password(
+        cls,
+        plain_text_password: str,
+        hashed_password: str,
+    ) -> str:
+        return checkpw(plain_text_password, hashed_password)
+
+    @classmethod
+    async def authenticate(
+        cls,
+        username: str,
+        password: str,
+    ) -> Optional[User]:
+        user = await User.get(username=username)
+        if not user:
+            return None
+        if not cls.check_password(password, user.password):
+            return None
+        return user
+
+    @classmethod
+    async def create(cls, **kwargs) -> User:
+        kwargs["password"] = cls.get_hashed_password(kwargs["password"])
+        return await super().create(**kwargs)
