@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { getUserSeries } from '../services/series'
+import NavBar from '../components/NavBar'
 import './Homepage.scss'
 
 const HomePage: React.FC = () => {
@@ -19,7 +20,10 @@ const HomePage: React.FC = () => {
   // })
 
   return (
-    <div className='homepage'>Homepage</div>
+    <>
+      <NavBar />
+      <div className='homepage'>Homepage</div>
+    </>
   )
 }
   
