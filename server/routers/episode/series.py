@@ -1,4 +1,5 @@
 from typing import Optional, List
+from pydantic import BaseModel as BasePySchema
 
 from .router import router
 from ...tools import BaseSchema, from_model, flat
@@ -16,17 +17,31 @@ class EpisodeSeriesSchema(BaseSchema):
     duration: flat(Attributes.Duration)
 
 
+class EpisodeSeriesContainerSchema(BasePySchema):
+    next: Optional[str]
+    data: List[List[EpisodeSeriesSchema]]
+
+
 @router.get(
     "/series/",
-    response_model=List[List[EpisodeSeriesSchema]],
+    response_model=EpisodeSeriesContainerSchema,
 )
 async def series(
     limit: Optional[int] = 3,
     offset: Optional[int] = 0,
 ):
-    page = []
+    data = []
     series = await Attributes.Series.all().order_by("-id").limit(limit).offset(offset)
 
     for s in series:
-        page.append(await EpisodeSeriesSchema.from_queryset(s.episodes.all()))
-    return page
+        data.append(await EpisodeSeriesSchema.from_queryset(s.episodes.all()))
+
+    if await Attributes.Series.all().count() > offset + limit:
+        next = f"/episode/series/?limit={limit}&offset={offset+limit}"
+    else:
+        next = None
+
+    return {
+        "next": next,
+        "data": data,
+    }

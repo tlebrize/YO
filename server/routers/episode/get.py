@@ -1,7 +1,9 @@
 from typing import List, Optional
+from fastapi import Depends
 
 from ...tools import BaseSchema, from_model, flat
-from ...models import Episode, Attributes
+from ...models import Episode, Attributes, User
+from ...dependencies import user_optional
 
 from .router import router
 
@@ -23,6 +25,8 @@ class EpisodeDetailsSchema(EpisodeSchema):
     level: flat(Attributes.Level)
     teacher: flat(Attributes.Teacher)
 
+    favorite: Optional[bool]
+
 
 @router.get(
     "/",
@@ -36,5 +40,15 @@ async def list(
 
 
 @router.get("/{uid}/", response_model=EpisodeDetailsSchema)
-async def details(uid: int):
-    return await EpisodeDetailsSchema.from_tortoise_orm(await Episode.get(id=uid))
+async def details(
+    uid: int,
+    user: Optional[User] = Depends(user_optional),
+):
+    if user:
+        episode = await Episode.is_favorite(user).get(id=uid)
+    else:
+        episode = await Episode.get(id=uid)
+
+    print(user, episode)
+
+    return await EpisodeDetailsSchema.from_tortoise_orm(episode)

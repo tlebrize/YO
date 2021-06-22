@@ -23,3 +23,13 @@ async def login_required(
     if not user:
         raise HTTPException(status_code=401, detail="Not Authenticated.")
     return user
+
+
+async def user_optional(request: Request, cache: Cache = Depends(get_cache)):
+    try:
+        return await login_required(request, cache)
+    except HTTPException as exc:
+        if exc.status_code == 401:
+            return None
+        else:
+            raise exc

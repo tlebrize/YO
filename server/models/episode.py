@@ -3,6 +3,8 @@ from __future__ import annotations
 from tortoise.models import Model
 from tortoise.manager import Manager
 from tortoise import fields
+from tortoise.query_utils import Q
+from tortoise.functions import Count
 from tortoise.queryset import QuerySet
 from tortoise.expressions import F
 from .attributes import Attributes
@@ -35,3 +37,8 @@ class Episode(Model, EpisodesAttributes):
         limit = min(max(0, limit), 50) if limit else 50
         offset = offset or 0
         return cls.all().limit(limit).offset(offset)
+
+    @classmethod
+    def is_favorite(cls, user):
+        count_favs = Count("fans__id", _filter=Q(fans__id=user.id))
+        return cls.annotate(favorite=count_favs)
