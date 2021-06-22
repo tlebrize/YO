@@ -28,7 +28,7 @@ class BaseSchema(PydanticModel):
 
     @classmethod
     async def from_tortoise_orm(cls, obj):
-        fetch_fields = _get_fetch_fields(cls, obj.model)
+        fetch_fields = _get_fetch_fields(cls, obj.__class__)
         await obj.fetch_related(*fetch_fields)
         return super().from_orm(obj)
 
