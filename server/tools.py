@@ -1,4 +1,4 @@
-import pydantic
+import pydantic, inspect
 from typing import Union
 from pydantic import root_validator
 from tortoise.contrib.pydantic.base import PydanticModel, _get_fetch_fields
@@ -41,9 +41,19 @@ class BaseSchema(PydanticModel):
 
 
 def flat(model):
-    @from_model(model)
-    class FlatSchema(BaseSchema):
-        name: str
-        flat = True
+    flocals = inspect.stack()[1][0].f_locals
+    basemodel = flocals["__qualname__"]
+    module = flocals["__module__"]
 
-    return Union[FlatSchema, str]
+    schema = from_model(model)(
+        type(
+            f"{module}.{basemodel}.{model.__name__}",
+            (BaseSchema,),
+            {
+                "__annotations__": {"name": str},
+                "flat": True,
+            },
+        )
+    )
+
+    return Union[schema, str]
