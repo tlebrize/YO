@@ -6,3 +6,4 @@ class Settings:
         "http://localhost:8000/",
         "http://localhost:8080/",
     ]
+    DB_URL = "postgres://yo:securepasswd@0.0.0.0:5432/yo"

@@ -24,13 +24,11 @@ app.include_router(auth)
 
 @app.get("/load_data/")
 async def load_data_view():
-    await load_data()
+    return await load_data()
 
-
-db_url = "postgres://yo:securepasswd@0.0.0.0:5432/yo"
 
 TORTOISE_ORM = {
-    "connections": {"default": db_url},
+    "connections": {"default": Settings.DB_URL},
     "apps": {
         "models": {
             "models": ["server.models", "aerich.models"],
@@ -41,8 +39,8 @@ TORTOISE_ORM = {
 
 register_tortoise(
     app,
-    db_url=db_url,
+    db_url=Settings.DB_URL,
     modules={"models": ["server.models"]},
-    generate_schemas=True,
+    generate_schemas=False,
     add_exception_handlers=True,
 )
