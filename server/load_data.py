@@ -63,7 +63,7 @@ async def insert_episodes(episodes):
 
 
 async def load_data():
-    if Episode.all().exists():
+    if await Episode.all().exists():
         return 0
     episodes = extract_categories({})
     await insert_episodes(episodes)
