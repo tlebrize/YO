@@ -11,20 +11,24 @@ router = APIRouter(
 )
 
 
-@router.get("/")
+@router.get(
+    "/",
+    response_model=List[EpisodeSchema],
+)
 async def list(
     limit: Optional[int] = 50,
     offset: Optional[int] = 0,
-    response_model=List[EpisodeSchema],
 ):
     return await EpisodeSchema.from_queryset(Episode.all())
 
 
-@router.get("/series/")
+@router.get(
+    "/series/",
+    response_model=List[List[EpisodeSeriesSchema]],
+)
 async def get(
     limit: Optional[int] = 3,
     offset: Optional[int] = 0,
-    response_model=List[List[EpisodeSeriesSchema]],
 ):
     page = []
     series = await Attributes.Series.all().order_by("-id").limit(limit).offset(offset)
@@ -34,9 +38,11 @@ async def get(
     return page
 
 
-@router.get("/{uid}/")
+@router.get(
+    "/{uid}/",
+    response_model=EpisodeSchema,
+)
 async def get(
     uid: int,
-    response_model=EpisodeSchema,
 ):
     return await EpisodeSchema.from_queryset_single(Episode.get(id=uid))
