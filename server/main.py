@@ -24,7 +24,7 @@ app.include_router(auth)
 
 @app.get("/load_data/")
 async def load_data_view():
-    await load_data()
+    return await load_data()
 
 
 TORTOISE_ORM = {
@@ -41,6 +41,6 @@ register_tortoise(
     app,
     db_url=Settings.DB_URL,
     modules={"models": ["server.models"]},
-    generate_schemas=True,
+    generate_schemas=False,
     add_exception_handlers=True,
 )

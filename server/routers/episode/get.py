@@ -37,4 +37,4 @@ async def list(
 
 @router.get("/{uid}/", response_model=EpisodeDetailsSchema)
 async def details(uid: int):
-    return EpisodeDetailsSchema.from_tortoise_orm(await Episode.get(id=uid))
+    return await EpisodeDetailsSchema.from_tortoise_orm(await Episode.get(id=uid))

@@ -28,7 +28,7 @@ class Episode(Model, EpisodesAttributes):
     title = fields.CharField(max_length=511)
     description = fields.TextField()
 
-    favorites = fields.ManyToManyField("models.User")
+    fans = fields.ManyToManyField("models.User", related_name="favorites")
 
     @classmethod
     async def list(cls, limit=None, offset=None) -> QuerySet[Episode]:

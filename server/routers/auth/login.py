@@ -1,5 +1,5 @@
 from uuid import uuid4
-from fastapi import Depends, Response
+from fastapi import Depends, Response, HTTPException
 from ...dependencies import Cache, get_cache
 from ...tools import BaseSchema, from_model
 from ...models import User
@@ -20,10 +20,7 @@ class UserSchema(BaseSchema):
     id: int
 
 
-@router.post(
-    "/login/",
-    response_model=UserSchema,
-)
+@router.post("/login/", response_model=UserSchema)
 async def login(
     form: LoginFormSchema,
     response: Response,
@@ -31,7 +28,8 @@ async def login(
 ):
     user = await User.authenticate(form.username, form.password)
     if not user:
-        return False
+        raise HTTPException(status_code=400, detail="Invalid Credentials")
+
     session_id = uuid4().hex
     response.set_cookie(
         "session_id",
@@ -40,6 +38,7 @@ async def login(
         secure=not Settings.DEBUG,
         httponly=True,
         samesite="strict",
+        expires=1_210_000,
     )
     await cache.add(session_id, user.username)
     return UserSchema.from_orm(user)
