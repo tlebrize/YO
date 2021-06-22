@@ -18,12 +18,14 @@ class UserLoginForm(BaseModel):
     password: str
 
 
-@router.post("/login/")
+@router.post(
+    "/login/",
+    response_model=UserSchema,
+)
 async def login(
     form: UserLoginForm,
     response: Response,
     cache: Cache = Depends(get_cache),
-    response_model=UserSchema,
 ):
     user = await User.authenticate(form.username, form.password)
     if not user:
