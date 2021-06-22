@@ -26,6 +26,12 @@ class BaseSchema(PydanticModel):
             cls.from_orm(obj) for obj in await queryset.prefetch_related(*fetch_fields)
         ]
 
+    @classmethod
+    async def from_tortoise_orm(cls, obj):
+        fetch_fields = _get_fetch_fields(cls, obj.model)
+        await obj.fetch_related(*fetch_fields)
+        return super().from_orm(obj)
+
     @root_validator(pre=True)
     def flatten(cls, values):
         for name, value in values.items():
