@@ -1,7 +1,19 @@
 from ..models import Episode
 from .tools import pydantic_flattenable_model_creator, exclude_fk_id
 
-EpisodeSchema = pydantic_flattenable_model_creator(Episode, name="Episode")
+EpisodeSchema = pydantic_flattenable_model_creator(
+    Episode,
+    to_flatten=[
+        # "series",
+        # "duration",
+        # "tag",
+        # "level",
+        # "teacher",
+        # "category",
+    ],
+    name="Episode",
+)
+
 EpisodeSeriesSchema = pydantic_flattenable_model_creator(
     Episode,
     name="EpisodeSeries",

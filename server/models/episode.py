@@ -28,6 +28,8 @@ class Episode(Model, EpisodesAttributes):
     title = fields.CharField(max_length=511)
     description = fields.TextField()
 
+    favorites = fields.ManyToManyField("models.User")
+
     @classmethod
     async def list(cls, limit=None, offset=None) -> QuerySet[Episode]:
         limit = min(max(0, limit), 50) if limit else 50

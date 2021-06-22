@@ -5,8 +5,6 @@ from pydantic import root_validator
 def pydantic_flattenable_model_creator(*args, to_flatten=None, **kwargs):
     model = pydantic_model_creator(*args, **kwargs)
 
-    def flatten_attributes
-
     class FlattenableSchema(model):
         @root_validator(allow_reuse=True)
         def flatten_attributes(cls, values):
