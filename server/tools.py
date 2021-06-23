@@ -56,4 +56,4 @@ def flat(model):
         )
     )
 
-    return Union[str, schema]
+    return Union[schema, str]
