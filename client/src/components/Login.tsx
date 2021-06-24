@@ -14,7 +14,6 @@ const Login = (props : LoginProps) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     const user = await loginUser({ username, password })
-    console.log(user.username)
     user ? props.setToken(user.username) : setError('Your login credentials could not be verified, please try again.')
   }
 
@@ -31,7 +30,7 @@ const Login = (props : LoginProps) => {
           <input type="password" onChange={e => setPassword(e.target.value)}/>
         </label>
         <div className='errormsg'>
-            {errorMsg && errorMsg}
+            {errorMsg}
         </div>
         <div>
           <button type="submit">Submit</button>

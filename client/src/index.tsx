@@ -1,17 +1,35 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { render } from 'react-dom'
 import Router from './Router'
-import NavBar from './components/NavBar'
 import './index.scss'
 import Login from './components/Login'
-import useToken from './lib/hooks/useToken'
+import { getUser } from './services/login'
 
 const App = () => {
 
-  const { token, setToken } = useToken();
+  const [ token, setToken ] = useState<string | null>('');
+  const [ loading, setLoading ] = useState<boolean>(true)
+
+  useEffect(() => {
+    getUser().then((user) => {
+      if (user) {
+        setToken(user);
+        sessionStorage.setItem('token', user)
+      }
+    }).finally(() => {
+      setLoading(false);
+    })
+  }, [])
+
+  if (loading) {
+    return <div></div>
+  }
 
   if (!token) {
-    return <Login setToken={setToken}/>
+    return <Login setToken={(user: string) => {
+      setToken(user)
+      sessionStorage.setItem('token', user)
+    }}/>
   }
 
   return (

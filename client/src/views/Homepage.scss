@@ -3,3 +3,9 @@
     width: 100vw;
     overflow-y: auto;
 }
+
+.series-container {
+    overflow-y: auto;
+    height: calc(100vh - 96px);
+    margin: 16px;
+}
