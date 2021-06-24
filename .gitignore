@@ -132,3 +132,8 @@ dmypy.json
 data_import/data/
 data/
 data.tar
+
+# Frontend stuff
+node_modules
+.DS_Store
+dist
